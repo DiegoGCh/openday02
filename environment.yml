@@ -1,0 +1,11 @@
+name: openday
+channels:
+  - defaults
+dependencies:
+  - faiss-cpu
+  - flask
+  - matplotlib
+  - pandas
+  - numpy
+  - face_recognition
+  - rtree
