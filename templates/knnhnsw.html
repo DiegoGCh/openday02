@@ -1,0 +1,107 @@
+<html lang="en"><head>
+   <title>OpenDay - Ciencia de Datos</title>
+   <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+  </head>
+  <body class="">
+    
+    <header class="d-flex justify-content-center py-3" id="header">
+         <nav class="nav nav-pills nav-fill">
+            <a class="nav-item nav-link active" href="/KNNHNSW">¿A qué famoso te pareces?</a>
+         </nav>
+
+
+    </header>  
+    <div class="cajita" > 
+      <div class="row" style="margin: 60; padding-left: 100; ">
+         <!--
+            <h2>Select a file to upload</h2>
+            <p>
+               {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                  <ul>
+                  {% for message in messages %}
+                     <li>{{ message }}</li>
+                  {% endfor %}
+                  </ul>
+                  {% endif %}
+               {% endwith %}
+            </p>
+         -->
+
+         <button id="start-camera">Inicia la cámara!</button>
+         <video id="video" width="320" height="240" autoplay></video>
+         <button id="click-photo">Tómate una foto</button>
+         <canvas id="canvas" width="320" height="240"></canvas>
+         
+         <form method="post" action="/KNNHNSW" id="list-form">
+            <dl>
+               <p>
+                  <input type="text" id="name" name="name" />
+                  <input type="hidden" id="fileURL" name="fileURL" value="a"/>
+               </p>
+            </dl>
+            <p>
+               <input type="submit" value="Submit" class="btn btn-info">
+            </p>
+         </form>
+   </div>
+   <div>
+      
+      {% if tiempo %}
+         <h2>Se tardó {{tiempo}} segundos en buscar a tus parecidos</h2>
+      {% endif %}
+      <section class="gallery min-vh-100">
+         <div class="container-lg">
+            {% if imagenprop %}
+               <div class="col">
+                  <img src= {{ url_for('static', filename= imagenprop)}} style="
+                  aspect-ratio: auto 320 / 240;" class="gallery-item" alt="gallery">
+               </div>
+            {% endif %}
+            <div class="row gy-4 row-cols-1 row-cols-sm-2 row-cols-md-3">
+               {% for imagen in imagenes %}
+               <div class="col">
+                  <img src= {{ url_for('static', filename= imagen)}} class="gallery-item" alt="gallery" width="80px" height="300px">
+               </div>
+               {% endfor %}
+            </div>
+         </div>
+      </section>
+    </div>
+
+  
+  <script>
+      let camera_button = document.querySelector("#start-camera");
+      let video = document.querySelector("#video");
+      let click_button = document.querySelector("#click-photo");
+      let canvas = document.querySelector("#canvas");
+      var image_data_url = 0;
+      camera_button.addEventListener('click', async function() {
+            let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+         video.srcObject = stream;
+      });
+
+      click_button.addEventListener('click', function() {
+         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+         image_data_url = canvas.toDataURL('image/jpeg');
+
+         // data url de la img
+         console.log(image_data_url);
+         
+      });
+      
+      let nameInput = document.getElementById('name');
+      document.getElementById('list-form').onsubmit = function(e) {
+         const image_data = image_data_url;
+         document.getElementById("fileURL").value = image_data;
+      }
+            
+
+  </script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/main.js"></script>
+  
+  </body></html>
